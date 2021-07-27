@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "529476736192",
+    "project_id": "ustadzkita-523b3",
+    "storage_bucket": "ustadzkita-523b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529476736192:android:fcca92a6ae55bfa3ca0925",
+        "android_client_info": {
+          "package_name": "com.jongjava.daikita"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "529476736192-c4vise67g1c3mha76a23vfnte5btnbhh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jongjava.daikita",
+            "certificate_hash": "bcc989e2cf14c393ad3723604e1c43d447bc7791"
+          }
+        },
+        {
+          "client_id": "529476736192-imp1i8igetvpidab3ahe2flig49j87r4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jongjava.daikita",
+            "certificate_hash": "82874e9e78c10eb2b5c02d4984e03127b095f590"
+          }
+        },
+        {
+          "client_id": "529476736192-8gpe97a6kb76vpajifhch98olg1tg9lb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQU4zWGTWZtkS1aVy6ErNWk0K3JSTZFrs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "529476736192-8gpe97a6kb76vpajifhch98olg1tg9lb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
