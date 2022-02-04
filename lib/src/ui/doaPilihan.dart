@@ -2,6 +2,7 @@ import 'package:daikita/src/blocs/fiturBloc.dart';
 import 'package:daikita/src/models/getListKategoriModel.dart';
 import 'package:daikita/src/models/getListMarkArtikelModel.dart';
 import 'package:daikita/src/pref/preferences.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/detailDoa.dart';
 import 'package:daikita/src/ui/listDoa.dart';
 import 'package:daikita/src/ui/utils/colorses.dart';
@@ -100,7 +101,7 @@ class _DoaPilihanState extends State<DoaPilihan> with SingleTickerProviderStateM
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Container(
-                          width: 180,
+                          width: 200,
                           child: TextField(
                             controller: _cari,
                             cursorColor: Color(0xff740e13),
@@ -156,7 +157,7 @@ class _DoaPilihanState extends State<DoaPilihan> with SingleTickerProviderStateM
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [KategoriPilihan(kode: widget.kode,cari: _cari.text,judul: widget.label,), DiTandai(kode: widget.kode,judul: widget.label,)],
+              children: [KategoriPilihan(kode: widget.kode,cari: _cari.text,judul: widget.label,), DiTandai(kode: widget.kode,cari: _cari.text,judul: widget.label,)],
             ),
           ),
         ],
@@ -226,7 +227,7 @@ class _KategoriPilihanState extends State<KategoriPilihan> {
                                   PageTransition(
                                       type: PageTransitionType.rightToLeft,
                                       duration: Duration(milliseconds: 200),
-                                      child: ListDoa(label: snapshot.data.data[i].kode,judul: widget.judul,)));
+                                      child: ListDoa(label: kategoriListDisplay[i].kode,judul: widget.judul,)));
                             },
                             child: Container(
                               height: 160.0,
@@ -234,7 +235,7 @@ class _KategoriPilihanState extends State<KategoriPilihan> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 image: DecorationImage(
-                                    image: NetworkImage("http://185.201.9.208/" + snapshot.data.data[i].image), fit: BoxFit.cover),
+                                    image: NetworkImage("$urlVps" + kategoriListDisplay[i].image), fit: BoxFit.cover),
                                 // border: Border(
                                 //   bottom: BorderSide(
                                 //     color: Colors.grey[300],
@@ -250,7 +251,7 @@ class _KategoriPilihanState extends State<KategoriPilihan> {
                                 children: <Widget>[
                                   Center(
                                     child: Text(
-                                      snapshot.data.data[i].nama,
+                                      kategoriListDisplay[i].nama,
                                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28),
                                     ),
                                   ),
@@ -263,7 +264,7 @@ class _KategoriPilihanState extends State<KategoriPilihan> {
                                           decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(21)),
                                           child: Center(
                                               child: Text(
-                                            snapshot.data.data[i].jumlah.toString(),
+                                                kategoriListDisplay[i].jumlah.toString(),
                                             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                                           ))))
                                 ],
@@ -281,8 +282,9 @@ class _KategoriPilihanState extends State<KategoriPilihan> {
 }
 
 class DiTandai extends StatefulWidget {
-  DiTandai({this.kode,this.judul});
+  DiTandai({this.kode,this.cari,this.judul});
   String kode;
+  String cari;
   String judul;
   @override
   _DiTandaiState createState() => _DiTandaiState();
@@ -316,6 +318,10 @@ class _DiTandaiState extends State<DiTandai> {
   }
   @override
   Widget build(BuildContext context) {
+    kategoriListDisplay = kategoriList.where((element) {
+      var namaUstadz = element.artikel.judul.toLowerCase();
+      return namaUstadz.contains(widget.cari);
+    }).toList();
     return Scaffold(
       body: StreamBuilder(
           stream: blocFitur.resListMarkArtikel,
@@ -336,7 +342,7 @@ class _DiTandaiState extends State<DiTandai> {
                             PageTransition(
                                 type: PageTransitionType.rightToLeft,
                                 duration: Duration(milliseconds: 200),
-                                child: DetailDoa(artikel: snapshot.data.result[i].artikel.kode,judul: widget.judul,)));
+                                child: DetailDoa(artikel: kategoriListDisplay[i].artikel.kode,judul: widget.judul,)));
                       },
                       child: Container(
                         height: 50.0,
@@ -362,7 +368,7 @@ class _DiTandaiState extends State<DiTandai> {
                               width: 9,
                               color: colorses.hijaudasar,
                             ),
-                            Text(snapshot.data.result[i].artikel.judul),
+                            Text(kategoriListDisplay[i].artikel.judul),
                             Spacer(),
                             Container(margin: EdgeInsets.only(right: 12),child: Icon(Icons.arrow_forward_ios,size: 14,))
                           ],

@@ -11,7 +11,7 @@ class GetDetailUstadzModel {
   });
 
   bool hasil;
-  DetailUstadz result;
+  ResultUstadz result;
 
   factory GetDetailUstadzModel.fromRawJson(String str) => GetDetailUstadzModel.fromJson(json.decode(str));
 
@@ -19,7 +19,7 @@ class GetDetailUstadzModel {
 
   factory GetDetailUstadzModel.fromJson(Map<String, dynamic> json) => GetDetailUstadzModel(
     hasil: json["hasil"],
-    result: DetailUstadz.fromJson(json["result"]),
+    result: ResultUstadz.fromJson(json["result"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -28,34 +28,37 @@ class GetDetailUstadzModel {
   };
 }
 
-class DetailUstadz {
-  DetailUstadz({
+class ResultUstadz {
+  ResultUstadz({
     this.nama,
     this.pendidikan,
     this.pekerjaan,
     this.organisasi,
+    this.profile,
     this.ulasan,
     this.artikel,
   });
 
   String nama;
   List<String> pendidikan;
-  List<dynamic> pekerjaan;
-  List<dynamic> organisasi;
+  List<String> pekerjaan;
+  List<String> organisasi;
+  String profile;
   List<UlasanModel> ulasan;
-  List<Artikel> artikel;
+  List<ArtikelModel> artikel;
 
-  factory DetailUstadz.fromRawJson(String str) => DetailUstadz.fromJson(json.decode(str));
+  factory ResultUstadz.fromRawJson(String str) => ResultUstadz.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory DetailUstadz.fromJson(Map<String, dynamic> json) => DetailUstadz(
+  factory ResultUstadz.fromJson(Map<String, dynamic> json) => ResultUstadz(
     nama: json["nama"],
     pendidikan: List<String>.from(json["pendidikan"].map((x) => x)),
-    pekerjaan: List<dynamic>.from(json["pekerjaan"].map((x) => x)),
-    organisasi: List<dynamic>.from(json["organisasi"].map((x) => x)),
+    pekerjaan: List<String>.from(json["pekerjaan"].map((x) => x)),
+    organisasi: List<String>.from(json["organisasi"].map((x) => x)),
+    profile: json["profile"],
     ulasan: List<UlasanModel>.from(json["ulasan"].map((x) => UlasanModel.fromJson(x))),
-    artikel: List<Artikel>.from(json["artikel"].map((x) => Artikel.fromJson(x))),
+    artikel: List<ArtikelModel>.from(json["artikel"].map((x) => ArtikelModel.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -63,227 +66,64 @@ class DetailUstadz {
     "pendidikan": List<dynamic>.from(pendidikan.map((x) => x)),
     "pekerjaan": List<dynamic>.from(pekerjaan.map((x) => x)),
     "organisasi": List<dynamic>.from(organisasi.map((x) => x)),
+    "profile": profile,
     "ulasan": List<dynamic>.from(ulasan.map((x) => x.toJson())),
     "artikel": List<dynamic>.from(artikel.map((x) => x.toJson())),
   };
 }
 
-class Artikel {
-  Artikel({
-    this.id,
+class ArtikelModel {
+  ArtikelModel({
     this.judul,
-    this.foto,
-    this.artikel,
-    this.active,
-    this.kode,
-    this.kategori,
-    this.label,
-    this.createdAt,
-    this.createdByU,
-    this.v,
+    this.isi,
+    this.tanggal,
   });
 
-  String id;
   String judul;
-  String foto;
-  String artikel;
-  bool active;
-  String kode;
-  String kategori;
-  String label;
-  DateTime createdAt;
-  String createdByU;
-  int v;
+  String isi;
+  DateTime tanggal;
 
-  factory Artikel.fromRawJson(String str) => Artikel.fromJson(json.decode(str));
+  factory ArtikelModel.fromRawJson(String str) => ArtikelModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory Artikel.fromJson(Map<String, dynamic> json) => Artikel(
-    id: json["_id"],
+  factory ArtikelModel.fromJson(Map<String, dynamic> json) => ArtikelModel(
     judul: json["judul"],
-    foto: json["foto"],
-    artikel: json["artikel"],
-    active: json["active"],
-    kode: json["kode"],
-    kategori: json["kategori"],
-    label: json["label"],
-    createdAt: DateTime.parse(json["CreatedAt"]),
-    createdByU: json["CreatedByU"],
-    v: json["__v"],
+    isi: json["isi"],
+    tanggal: DateTime.parse(json["tanggal"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
     "judul": judul,
-    "foto": foto,
-    "artikel": artikel,
-    "active": active,
-    "kode": kode,
-    "kategori": kategori,
-    "label": label,
-    "CreatedAt": createdAt.toIso8601String(),
-    "CreatedByU": createdByU,
-    "__v": v,
+    "isi": isi,
+    "tanggal": tanggal.toIso8601String(),
   };
 }
 
 class UlasanModel {
   UlasanModel({
-    this.id,
-    this.guest,
-    this.ustadz,
+    this.nama,
+    this.komen,
     this.rating,
-    this.type,
-    this.undangan,
-    this.createdAt,
-    this.v,
-    this.komentar,
-    this.chat,
   });
 
-  String id;
-  Guest guest;
-  String ustadz;
+  String nama;
+  String komen;
   String rating;
-  String type;
-  String undangan;
-  DateTime createdAt;
-  int v;
-  String komentar;
-  String chat;
 
   factory UlasanModel.fromRawJson(String str) => UlasanModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory UlasanModel.fromJson(Map<String, dynamic> json) => UlasanModel(
-    id: json["_id"],
-    guest: Guest.fromJson(json["guest"]),
-    ustadz: json["ustadz"],
+    nama: json["nama"],
+    komen: json["komen"],
     rating: json["rating"],
-    type: json["Type"],
-    undangan: json["undangan"] == null ? null : json["undangan"],
-    createdAt: DateTime.parse(json["CreatedAt"]),
-    v: json["__v"],
-    komentar: json["komentar"],
-    chat: json["chat"] == null ? null : json["chat"],
   );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "guest": guest.toJson(),
-    "ustadz": ustadz,
+    "nama": nama,
+    "komen": komen,
     "rating": rating,
-    "Type": type,
-    "undangan": undangan == null ? null : undangan,
-    "CreatedAt": createdAt.toIso8601String(),
-    "__v": v,
-    "komentar": komentar,
-    "chat": chat == null ? null : chat,
-  };
-}
-
-class Guest {
-  Guest({
-    this.id,
-    this.username,
-    this.password,
-    this.fullName,
-    this.provinsi,
-    this.kota,
-    this.kecamatan,
-    this.provinsiId,
-    this.kotaId,
-    this.kecamatanId,
-    this.noHp,
-    this.email,
-    this.active,
-    this.type,
-    this.createdAt,
-    this.v,
-    this.editedAt,
-    this.foto,
-    this.riwayatOrganisasi,
-    this.riwayatPekerjaan,
-    this.daftarKaryaTulis,
-    this.pendidikan,
-  });
-
-  String id;
-  String username;
-  String password;
-  String fullName;
-  String provinsi;
-  String kota;
-  String kecamatan;
-  String provinsiId;
-  String kotaId;
-  String kecamatanId;
-  String noHp;
-  String email;
-  int active;
-  String type;
-  DateTime createdAt;
-  int v;
-  DateTime editedAt;
-  String foto;
-  List<dynamic> riwayatOrganisasi;
-  List<dynamic> riwayatPekerjaan;
-  List<dynamic> daftarKaryaTulis;
-  List<dynamic> pendidikan;
-
-  factory Guest.fromRawJson(String str) => Guest.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory Guest.fromJson(Map<String, dynamic> json) => Guest(
-    id: json["_id"],
-    username: json["Username"],
-    password: json["Password"],
-    fullName: json["FullName"],
-    provinsi: json["Provinsi"],
-    kota: json["Kota"],
-    kecamatan: json["Kecamatan"],
-    provinsiId: json["Provinsi_id"],
-    kotaId: json["Kota_id"],
-    kecamatanId: json["Kecamatan_id"],
-    noHp: json["NoHP"],
-    email: json["Email"],
-    active: json["Active"],
-    type: json["Type"],
-    createdAt: DateTime.parse(json["CreatedAt"]),
-    v: json["__v"],
-    editedAt: DateTime.parse(json["EditedAt"]),
-    foto: json["Foto"],
-    riwayatOrganisasi: List<dynamic>.from(json["RiwayatOrganisasi"].map((x) => x)),
-    riwayatPekerjaan: List<dynamic>.from(json["RiwayatPekerjaan"].map((x) => x)),
-    daftarKaryaTulis: List<dynamic>.from(json["DaftarKaryaTulis"].map((x) => x)),
-    pendidikan: List<dynamic>.from(json["Pendidikan"].map((x) => x)),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "_id": id,
-    "Username": username,
-    "Password": password,
-    "FullName": fullName,
-    "Provinsi": provinsi,
-    "Kota": kota,
-    "Kecamatan": kecamatan,
-    "Provinsi_id": provinsiId,
-    "Kota_id": kotaId,
-    "Kecamatan_id": kecamatanId,
-    "NoHP": noHp,
-    "Email": email,
-    "Active": active,
-    "Type": type,
-    "CreatedAt": createdAt.toIso8601String(),
-    "__v": v,
-    "EditedAt": editedAt.toIso8601String(),
-    "Foto": foto,
-    "RiwayatOrganisasi": List<dynamic>.from(riwayatOrganisasi.map((x) => x)),
-    "RiwayatPekerjaan": List<dynamic>.from(riwayatPekerjaan.map((x) => x)),
-    "DaftarKaryaTulis": List<dynamic>.from(daftarKaryaTulis.map((x) => x)),
-    "Pendidikan": List<dynamic>.from(pendidikan.map((x) => x)),
   };
 }

@@ -87,12 +87,12 @@ class _LupaPasswordState extends State<LupaPassword> {
           Container(
             margin: EdgeInsets.only(top: 12,left: 30),
             width: MediaQuery.of(context).size.width/2 + 50,
-            child: Text("Masukkan no telepon yang terhubung dengan akun Anda",style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),
+            child: Text("Masukkan email yang terhubung dengan akun Anda",style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),
           ),
           Container(
             margin: EdgeInsets.only(top: 12,left: 30),
             width: MediaQuery.of(context).size.width/2 + 50,
-            child: Text("Kami akan mengirimkan kode password ke whatsapp Anda",style: TextStyle(fontSize: 14,color: Colors.grey),),
+            child: Text("Kami akan mengirimkan kode password ke email Anda \n Jika di Kotak Masuk tidak ada, silahkan cek email spam anda",style: TextStyle(fontSize: 14,color: Colors.grey),),
           ),
           SizedBox(height: 20,),
           Container(
@@ -107,9 +107,9 @@ class _LupaPasswordState extends State<LupaPassword> {
               controller: _email,
               cursorColor: colorses.hijaudasar,
               decoration: InputDecoration(
-                hintText: "No Telpon",
+                hintText: "Email",
                 border: InputBorder.none,
-                errorText: _email.text.length < 3 && _validate ? 'No Telpon harus diisi !' : null,
+                errorText: _email.text.length < 3 && _validate ? 'Email harus diisi !' : null,
               ),
             ),
           ),
@@ -133,6 +133,8 @@ class _LupaPasswordState extends State<LupaPassword> {
                         // setNama(data.data.namaLengkap);
                         // setUsername(data.data.username);
                         // setKdUser(data.data.nopol);
+                        Toast.show(data.message, context,
+                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                         Navigator.pushReplacementNamed(context, "/login");
                       });
                     }else{

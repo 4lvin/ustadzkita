@@ -1,13 +1,15 @@
 import 'package:daikita/src/models/getUndanganModel.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/utils/colorses.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class NotifUndangan extends StatefulWidget {
-  NotifUndangan({this.undangan});
+  NotifUndangan({this.undangan, this.foto});
 
   GetUndanganModel undangan;
+  String foto;
 
   @override
   _NotifUndanganState createState() => _NotifUndanganState();
@@ -78,7 +80,12 @@ class _NotifUndanganState extends State<NotifUndangan> {
                                 margin: EdgeInsets.only(left: 12),
                                 height: 80,
                                 width: 80,
-                                decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(12)),
+                                decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(12),image: DecorationImage(
+                                    image: widget.foto == null
+                                        ? NetworkImage(
+                                        "https://3.bp.blogspot.com/-a6eXQ7JDago/WR6wYhHcp3I/AAAAAAAAB98/3QxH69fmBN85FPA5_PBATBSejiC2w-JHgCLcB/s1600/Flat%2BMusth%2B2.png")
+                                        : NetworkImage(urlVps+widget.foto),
+                                    fit: BoxFit.cover)),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 8.0),

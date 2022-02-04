@@ -1,9 +1,11 @@
 import 'package:daikita/src/blocs/fiturBloc.dart';
 import 'package:daikita/src/models/getListUstadzModel.dart';
 import 'package:daikita/src/pref/preferences.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/buatJadwal.dart';
 import 'package:daikita/src/ui/chatRoom.dart';
 import 'package:daikita/src/ui/detailUndangan.dart';
+import 'package:daikita/src/ui/profileUstadz.dart';
 import 'package:daikita/src/ui/utils/colorses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -86,7 +88,7 @@ class _CariUstadzState extends State<CariUstadz> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             InkWell(
-                              onTap: (){
+                              onTap: () {
                                 Navigator.of(context).pop();
                               },
                               child: Icon(
@@ -186,19 +188,30 @@ class _CariUstadzState extends State<CariUstadz> {
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Container(
-                                                height: 80,
-                                                width: 80,
-                                                margin: EdgeInsets.only(right: 12),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    image: DecorationImage(
-                                                        image: ustadzListDisplay[i].foto == null
-                                                            ? NetworkImage(
-                                                                "https://3.bp.blogspot.com/-a6eXQ7JDago/WR6wYhHcp3I/AAAAAAAAB98/3QxH69fmBN85FPA5_PBATBSejiC2w-JHgCLcB/s1600/Flat%2BMusth%2B2.png")
-                                                            : NetworkImage(ustadzListDisplay[i].foto),
-                                                        // "http://jongjava.tech/tumbas/assets/foto_produk/" + produkListDisplay[i].gambar),
-                                                        fit: BoxFit.cover))),
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    PageTransition(
+                                                        type: PageTransitionType.rightToLeft,
+                                                        duration: Duration(milliseconds: 200),
+                                                        child: ProfileUstadz(
+                                                            data: ustadzListDisplay[i], image: ustadzListDisplay[i].foto)));
+                                              },
+                                              child: Container(
+                                                  height: 80,
+                                                  width: 80,
+                                                  margin: EdgeInsets.only(right: 12),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      image: DecorationImage(
+                                                          image: ustadzListDisplay[i].foto == null
+                                                              ? NetworkImage(
+                                                                  "https://3.bp.blogspot.com/-a6eXQ7JDago/WR6wYhHcp3I/AAAAAAAAB98/3QxH69fmBN85FPA5_PBATBSejiC2w-JHgCLcB/s1600/Flat%2BMusth%2B2.png")
+                                                              : NetworkImage(urlVps + ustadzListDisplay[i].foto),
+                                                          // "http://jongjava.tech/tumbas/assets/foto_produk/" + produkListDisplay[i].gambar),
+                                                          fit: BoxFit.cover))),
+                                            ),
                                             Expanded(
                                               child: Container(
                                                 child: Column(
@@ -234,7 +247,9 @@ class _CariUstadzState extends State<CariUstadz> {
                                                                 PageTransition(
                                                                     type: PageTransitionType.rightToLeft,
                                                                     duration: Duration(milliseconds: 200),
-                                                                    child: ChatRoom(email:ustadzListDisplay[i].email,nama: ustadzListDisplay[i].fullName,)));
+                                                                    child: ProfileUstadz(
+                                                                        data: ustadzListDisplay[i],
+                                                                        image: ustadzListDisplay[i].foto)));
                                                             // Toast.show("Segera hadir", context,
                                                             //     duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                                                           },
@@ -253,13 +268,15 @@ class _CariUstadzState extends State<CariUstadz> {
                                                           ),
                                                         ),
                                                         InkWell(
-                                                          onTap: (){
+                                                          onTap: () {
                                                             Navigator.push(
                                                                 context,
                                                                 PageTransition(
                                                                     type: PageTransitionType.rightToLeft,
                                                                     duration: Duration(milliseconds: 200),
-                                                                    child: BuatJadwal(data: ustadzListDisplay[i],)));
+                                                                    child: ProfileUstadz(
+                                                                        data: ustadzListDisplay[i],
+                                                                        image: ustadzListDisplay[i].foto)));
                                                           },
                                                           child: Container(
                                                             width: 100,

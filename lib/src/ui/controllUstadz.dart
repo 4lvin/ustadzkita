@@ -27,7 +27,7 @@ class _ControllUstadzState extends State<ControllUstadz> {
     if (tipe == "Guest") {
       return Ustadz();
     } else if (tipe == "Ustadz") {
-      return UndanganSayaUstadz(index: 0,);
+      return UndanganSayaUstadz(index: 0,status:"ctrl");
     }else{
       return Scaffold(
         body: Center(child: CircularProgressIndicator()),

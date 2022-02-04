@@ -63,7 +63,7 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
   // Return "Email" label
   get _getEmailLabel {
     return new Text(
-      "Masukkan nomer otp yang kami \n kirim ke Whatsapp anda",
+      "Masukkan nomer otp yang kami \n kirim ke Email anda \n Jika di Kotak Masuk tidak ada, silahkan cek email spam anda",
       textAlign: TextAlign.center,
       style: new TextStyle(
           fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w600),

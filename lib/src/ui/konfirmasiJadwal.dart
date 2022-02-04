@@ -23,7 +23,8 @@ class KonfirmasiJadwal extends StatefulWidget {
       this.kecamatan,
       this.alamat,
       this.akomodasi,
-      this.namaKota});
+      this.namaKota,
+      this.foto});
 
   String ustadz,
       namaUstadz,
@@ -38,7 +39,8 @@ class KonfirmasiJadwal extends StatefulWidget {
       kecamatan,
       alamat,
       akomodasi,
-      namaKota;
+      namaKota,
+      foto;
 
   @override
   _KonfirmasiJadwalState createState() => _KonfirmasiJadwalState();
@@ -317,7 +319,7 @@ class _KonfirmasiJadwalState extends State<KonfirmasiJadwal> {
                     Navigator.push(
                         context,
                         PageTransition(
-                            type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 200), child: NotifUndangan(undangan: respon,)));
+                            type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 200), child: NotifUndangan(undangan: respon,foto:widget.foto)));
                   });
                 }else{
                   Dialogs.dismiss(context);

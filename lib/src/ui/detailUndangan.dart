@@ -1,12 +1,18 @@
 import 'package:daikita/src/blocs/fiturBloc.dart';
 import 'package:daikita/src/pref/preferences.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
+import 'package:daikita/src/ui/ulasanPage.dart';
 import 'package:daikita/src/ui/utils/colorses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:page_transition/page_transition.dart';
 
 class DetailUndangan extends StatefulWidget {
-  DetailUndangan({this.kode});
+  DetailUndangan({this.status,this.kode, this.ulasan,this.foto});
+  String status;
   String kode;
+  int ulasan;
+  String foto;
   @override
   _DetailUndanganState createState() => _DetailUndanganState();
 }
@@ -145,7 +151,10 @@ class _DetailUndanganState extends State<DetailUndangan> {
                               width: 70,
                               decoration: BoxDecoration(
                                   color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(12)
+                                  borderRadius: BorderRadius.circular(12),
+                                  image: DecorationImage(
+                                      image: NetworkImage("$urlVps/"+widget.foto),
+                                      fit: BoxFit.cover)
                               ),
                             ),
                             Column(
@@ -243,41 +252,7 @@ class _DetailUndanganState extends State<DetailUndangan> {
                                       width:50,
                                       height: 50,
                                       decoration: BoxDecoration(
-                                          color: length>2?Color(0xff2ECC71):Colors.grey,
-                                          borderRadius: BorderRadius.circular(12)
-                                      ),
-                                      child: Icon(Icons.mail_outline,color: Colors.white,)),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text("Dihadiri"),
-                                      Container(
-                                          width: 180,
-                                          child: Text("Ustadz pilihan Anda sedang menghadiri undangan yang Anda buat.",style: TextStyle(fontSize: 11,color: Colors.grey),)),
-
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            Text("11:00:19"),
-                          ],
-                        ),
-                        SizedBox(height: 18,),
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.brightness_1,color: Colors.white,),
-                            Container(
-                              margin: EdgeInsets.only(left: 8),
-                              child: Row(
-                                children: <Widget>[
-                                  Container(
-                                      margin: EdgeInsets.only(right: 8),
-                                      width:50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          color: length>3?Color(0xffF1C40F):Colors.grey,
+                                          color: length>2?Color(0xffF1C40F):Colors.grey,
                                           borderRadius: BorderRadius.circular(12)
                                       ),
                                       child: Icon(Icons.star,color: Colors.white,)),
@@ -299,15 +274,29 @@ class _DetailUndanganState extends State<DetailUndangan> {
                           ],
                         ),
                         SizedBox(height: 18,),
-                        Container(
-                          width: MediaQuery.of(context).size.width-50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: colorses.biru2
+                        widget.status=="selesai"?InkWell(
+                          onTap: (){
+                            if(widget.ulasan == 1){
+                              print("0");
+                            }else{
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      type: PageTransitionType.rightToLeft,
+                                      duration: Duration(milliseconds: 200),
+                                      child: UlasanPage(nama:nama, kode:widget.kode)));
+                            }
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width-50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: widget.ulasan == 1?Colors.grey:colorses.biru2
+                            ),
+                            child: Center(child: Text("${widget.ulasan == 1?"Telah diulas":"Beri Ulasan"}",style: TextStyle(color: Colors.white),)),
                           ),
-                          child: Center(child: Text("Beri Ulasan",style: TextStyle(color: Colors.white),)),
-                        )
+                        ):Container()
                       ],
                     ),
                     Positioned(
@@ -327,12 +316,6 @@ class _DetailUndanganState extends State<DetailUndangan> {
                             color: length>2?Color(0xffF1C40F):Color(0xff95A5A6),
                           ),
                           Icon(Icons.brightness_1,color: length>2?Color(0xffF1C40F):Color(0xff95A5A6),),
-                          Container(
-                            height: 47,
-                            width: 1,
-                            color: length>3?Color(0xffF1C40F):Color(0xff95A5A6),
-                          ),
-                          Icon(Icons.brightness_1,color: length>3?Color(0xffF1C40F):Color(0xff95A5A6),),
                         ],
                       ),
                     )

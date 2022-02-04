@@ -6,6 +6,7 @@ import 'package:daikita/src/models/getListUstadzModel.dart';
 import 'package:daikita/src/models/getMasterKajianModel.dart';
 import 'package:daikita/src/models/getProvinsiModel.dart';
 import 'package:daikita/src/pref/preferences.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/konfirmasiJadwal.dart';
 import 'package:daikita/src/ui/utils/colorses.dart';
 import 'package:flutter/material.dart';
@@ -191,7 +192,7 @@ class _BuatJadwalState extends State<BuatJadwal> {
                                       image: widget.data.foto == null
                                           ? NetworkImage(
                                               "https://3.bp.blogspot.com/-a6eXQ7JDago/WR6wYhHcp3I/AAAAAAAAB98/3QxH69fmBN85FPA5_PBATBSejiC2w-JHgCLcB/s1600/Flat%2BMusth%2B2.png")
-                                          : NetworkImage(widget.data.foto),
+                                          : NetworkImage(urlVps+widget.data.foto),
                                       fit: BoxFit.cover)),
                             ),
                             Column(
@@ -662,6 +663,7 @@ class _BuatJadwalState extends State<BuatJadwal> {
                                       alamat: _alamat.text,
                                       akomodasi: _akomodasi.text,
                                       namaKota: _namaKota,
+                                      foto:widget.data.foto,
                                     )));
                           }
                         },

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:daikita/src/models/getBannerAtasModel.dart';
 import 'package:daikita/src/models/getBannerQuotesModel.dart';
 import 'package:daikita/src/models/getBannerTengahModel.dart';
@@ -5,10 +7,12 @@ import 'package:daikita/src/models/getJadwalSholatModel.dart';
 import 'package:daikita/src/models/getKecamatanModel.dart';
 import 'package:daikita/src/models/getKotaModel.dart';
 import 'package:daikita/src/models/getLoginModel.dart';
+import 'package:daikita/src/models/getProfilModel.dart';
 import 'package:daikita/src/models/getProvinsiModel.dart';
 import 'package:daikita/src/models/resKonfirmOtpModel.dart';
 import 'package:daikita/src/models/resLoginGmailModel.dart';
 import 'package:daikita/src/models/resLupaPasswordModel.dart';
+import 'package:daikita/src/models/resPostArtikelModel.dart';
 import 'package:daikita/src/models/resRegisterGuestModel.dart';
 import 'package:daikita/src/resources/repositories.dart';
 import 'package:rxdart/rxdart.dart';
@@ -27,6 +31,8 @@ class MemberBloc {
   final _bannerQuotesFetcher = PublishSubject<GetBannerQuoteModel>();
   final _bannerTengahFetcher = PublishSubject<GetBannerTengahModel>();
   final _bannerAtasFetcher = PublishSubject<GetBannerAtasModel>();
+  final _profilFetcher = PublishSubject<GetProfilModel>();
+  final _updatePasswordFetcher = PublishSubject<ResPostArtikelModel>();
 
   PublishSubject<GetLoginModel> get resLogin => _loginFetcher.stream;
 
@@ -51,6 +57,10 @@ class MemberBloc {
   PublishSubject<GetBannerTengahModel> get resBannerTengah => _bannerTengahFetcher.stream;
 
   PublishSubject<GetBannerAtasModel> get resBannerAtas => _bannerAtasFetcher.stream;
+
+  PublishSubject<GetProfilModel> get resProfil => _profilFetcher.stream;
+
+  PublishSubject<ResPostArtikelModel> get resUpdatePass => _updatePasswordFetcher.stream;
 
   login(String username, String password) async {
     try {
@@ -113,6 +123,7 @@ class MemberBloc {
       ResLoginGmailModel resLoginGmailModel = await _repository.loginGmail(email, name);
       _loginGmailFetcher.sink.add(resLoginGmailModel);
     } catch (error) {
+      print(error);
       _loginGmailFetcher.sink.add(error);
     }
   }
@@ -162,6 +173,34 @@ class MemberBloc {
     }
   }
 
+  getProfil(String token) async {
+    try {
+      GetProfilModel getProfilModel = await _repository.getProfil(token);
+      _profilFetcher.sink.add(getProfilModel);
+    } catch (error) {
+      _profilFetcher.sink.add(error);
+    }
+  }
+
+  Future updateProfile(String token, File foto) async {
+    int statusCode = await _repository.updateProfil(token, foto);
+    return statusCode;
+  }
+
+  Future updateProfile2(String nama, String kec, String nikah, String negara, String alamat, String token) async {
+    int statusCode = await _repository.updateProfile2(nama, kec, nikah, negara, alamat, token);
+    return statusCode;
+  }
+
+  Future updatePassword(String passwordLama, String password, String token) async {
+    try {
+      ResPostArtikelModel resPostArtikelModel = await _repository.updatePassword(passwordLama, password, token);
+      _updatePasswordFetcher.sink.add(resPostArtikelModel);
+    } catch (error) {
+      _updatePasswordFetcher.sink.add(error);
+    }
+  }
+
   dispose() {
     _loginFetcher.close();
     _daftarGuestFetcher.close();
@@ -175,6 +214,8 @@ class MemberBloc {
     _bannerQuotesFetcher.close();
     _bannerTengahFetcher.close();
     _bannerAtasFetcher.close();
+    _profilFetcher.close();
+    _updatePasswordFetcher.close();
   }
 }
 

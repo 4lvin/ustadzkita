@@ -1,6 +1,7 @@
 import 'package:daikita/src/blocs/fiturBloc.dart';
 import 'package:daikita/src/models/getListUstadzModel.dart';
 import 'package:daikita/src/pref/preferences.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/buatJadwal.dart';
 import 'package:daikita/src/ui/cariUstadz.dart';
 import 'package:daikita/src/ui/profileUstadz.dart';
@@ -66,10 +67,16 @@ class _UstadzState extends State<Ustadz> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                        ),
+                        Text(""),
+                        // InkWell(
+                        //   onTap: (){
+                        //     Navigator.of(context).pop();
+                        //   },
+                        //   child: Icon(
+                        //     Icons.arrow_back_ios,
+                        //     color: Colors.white,
+                        //   ),
+                        // ),
                         Text(
                           "Cari Ustadz",
                           style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
@@ -242,7 +249,7 @@ class _UstadzState extends State<Ustadz> {
                                       borderRadius: BorderRadius.circular(8),
                                       image: DecorationImage(
                                           image: snapshot.data.result[i].foto== null?NetworkImage("https://3.bp.blogspot.com/-a6eXQ7JDago/WR6wYhHcp3I/AAAAAAAAB98/3QxH69fmBN85FPA5_PBATBSejiC2w-JHgCLcB/s1600/Flat%2BMusth%2B2.png"): NetworkImage(
-                                             snapshot.data.result[i].foto),
+                                             urlVps+snapshot.data.result[i].foto),
                                           fit: BoxFit.cover)),
                                 ),
                                 Positioned(

@@ -1,14 +1,17 @@
 import 'package:daikita/src/blocs/chatBloc.dart';
 import 'package:daikita/src/models/getChatListDetailModel.dart';
 import 'package:daikita/src/pref/preferences.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/utils/colorses.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 class ChatRoom extends StatefulWidget {
-  ChatRoom({this.email, this.nama});
+  ChatRoom({this.email, this.nama, this.foto});
 
   String nama;
   String email;
+  String foto;
 
   @override
   _ChatRoomState createState() => _ChatRoomState();
@@ -32,9 +35,7 @@ class _ChatRoomState extends State<ChatRoom> {
         } else {
           blocChat.chatListDetail(token, widget.email, "");
         }
-        setState(() {
-
-        });
+        setState(() {});
       });
     });
     return Scaffold(
@@ -49,9 +50,12 @@ class _ChatRoomState extends State<ChatRoom> {
               children: [
                 CircleAvatar(
                   radius: 23,
-                  backgroundImage: NetworkImage(
-                    "https://3.bp.blogspot.com/-a6eXQ7JDago/WR6wYhHcp3I/AAAAAAAAB98/3QxH69fmBN85FPA5_PBATBSejiC2w-JHgCLcB/s1600/Flat%2BMusth%2B2.png",
-                  ),
+                  backgroundImage: widget.foto == null
+                      ? NetworkImage(
+                          "https://3.bp.blogspot.com/-a6eXQ7JDago/WR6wYhHcp3I/AAAAAAAAB98/3QxH69fmBN85FPA5_PBATBSejiC2w-JHgCLcB/s1600/Flat%2BMusth%2B2.png",
+                        )
+                      : NetworkImage('${urlVps + widget.foto}'),
+                  // fit: BoxFit.cover,
                 ),
                 SizedBox(
                   width: 8,
@@ -79,12 +83,14 @@ class _ChatRoomState extends State<ChatRoom> {
             //       size: 28,
             //     ),
             //     onPressed: () {}),
-            IconButton(
-                icon: Icon(
-                  Icons.call,
-                  size: 28,
-                ),
-                onPressed: () {})
+            // IconButton(
+            //     icon: Icon(
+            //       Icons.call,
+            //       size: 28,
+            //     ),
+            //     onPressed: () {
+            //       Toast.show("Fitur dalam pengembangan", context, duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+            //     })
           ],
           elevation: 0,
         ),
@@ -220,10 +226,10 @@ class _ChatRoomState extends State<ChatRoom> {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.insert_emoticon,
-                    color: Colors.grey[500],
-                  ),
+                  // Icon(
+                  //   Icons.insert_emoticon,
+                  //   color: Colors.grey[500],
+                  // ),
                   SizedBox(
                     width: 10,
                   ),
@@ -237,10 +243,10 @@ class _ChatRoomState extends State<ChatRoom> {
                       ),
                     ),
                   ),
-                  Icon(
-                    Icons.attach_file,
-                    color: Colors.grey[500],
-                  )
+                  // Icon(
+                  //   Icons.attach_file,
+                  //   color: Colors.grey[500],
+                  // )
                 ],
               ),
             ),
@@ -250,7 +256,7 @@ class _ChatRoomState extends State<ChatRoom> {
           ),
           InkWell(
             onTap: () {
-              if(_pesan.text.isNotEmpty){
+              if (_pesan.text.isNotEmpty) {
                 getToken().then((token) {
                   blocChat.sendChat(token, widget.email, _pesan.text);
                   blocChat.resSendChat.listen((value) {

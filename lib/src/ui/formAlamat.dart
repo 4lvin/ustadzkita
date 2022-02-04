@@ -139,6 +139,7 @@ class _FormAlamatState extends State<FormAlamat> {
                             FocusScope.of(context).requestFocus(new FocusNode());
                             _provinsi = snapshot.data.result.indexOf(value);
                             _selectedProvinsi = value.kode;
+                            _kota = 0;
                             memberBloc.getKota(_selectedProvinsi);
                           });
                         },
@@ -184,6 +185,7 @@ class _FormAlamatState extends State<FormAlamat> {
                                 FocusScope.of(context).requestFocus(new FocusNode());
                                 _kota = snapshot.data.result.indexOf(value);
                                 _selectedKota = value.kode;
+                                _kecamatan = 0;
                                 memberBloc.getKecamatan(_selectedProvinsi,value.kode);
                               });
                             },

@@ -4,6 +4,7 @@ import 'package:daikita/src/models/getListUstadzModel.dart';
 import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/buatJadwal.dart';
 import 'package:daikita/src/ui/chatRoom.dart';
+import 'package:daikita/src/ui/postArtikel.dart';
 import 'package:daikita/src/ui/utils/colorses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -11,17 +12,19 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
-class ProfileUstadz extends StatefulWidget {
-  ProfileUstadz({this.data, this.image});
+class ProfileUstadzArtikel extends StatefulWidget {
+  ProfileUstadzArtikel({this.nama,this.noHp,this.kecamatan, this.image});
 
-  Result data;
+  String nama;
+  String noHp;
+  String kecamatan;
   String image;
 
   @override
-  _ProfileUstadzState createState() => _ProfileUstadzState();
+  _ProfileUstadzArtikelState createState() => _ProfileUstadzArtikelState();
 }
 
-class _ProfileUstadzState extends State<ProfileUstadz> with SingleTickerProviderStateMixin {
+class _ProfileUstadzArtikelState extends State<ProfileUstadzArtikel> with SingleTickerProviderStateMixin {
   TabController _tabController;
   List<dynamic> ustadzDetail = List<dynamic>();
   List<dynamic> pekerjaan = List<dynamic>();
@@ -29,11 +32,12 @@ class _ProfileUstadzState extends State<ProfileUstadz> with SingleTickerProvider
   List<UlasanModel> ulasanList = List<UlasanModel>();
   List<ArtikelModel> artikel = List<ArtikelModel>();
   String profilS = "Loading ...";
+  String label;
 
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
-    blocFitur.profilUstadz(widget.data.noHp);
+    blocFitur.profilUstadz(widget.noHp);
     blocFitur.resProfilUstadz.listen((value) {
       if (mounted)
         setState(() {
@@ -43,6 +47,7 @@ class _ProfileUstadzState extends State<ProfileUstadz> with SingleTickerProvider
           ulasanList.addAll(value.result.ulasan);
           artikel.addAll(value.result.artikel);
           profilS = value.result.profile;
+
         });
     });
     super.initState();
@@ -160,7 +165,7 @@ class _ProfileUstadzState extends State<ProfileUstadz> with SingleTickerProvider
                         height: 9,
                       ),
                       Text(
-                        "${widget.data.fullName}",
+                        "${widget.nama}",
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       SizedBox(
@@ -174,7 +179,7 @@ class _ProfileUstadzState extends State<ProfileUstadz> with SingleTickerProvider
                         height: 9,
                       ),
                       Text(
-                        "${widget.data.kecamatan}",
+                        "${widget.kecamatan}",
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -220,52 +225,17 @@ class _ProfileUstadzState extends State<ProfileUstadz> with SingleTickerProvider
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        height: 60,
-        child: Row(
-          children: <Widget>[
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    PageTransition(
-                        type: PageTransitionType.rightToLeft,
-                        duration: Duration(milliseconds: 200),
-                        child: ChatRoom(
-                          email: widget.data.email,
-                          nama: widget.data.fullName,
-                          foto: widget.image,
-                        )));
-              },
-              child: Container(
-                color: colorses.hijaucerahg2,
-                width: MediaQuery.of(context).size.width / 2 - 20,
-                child: Center(child: Text("Chat", style: TextStyle(color: Colors.white))),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    PageTransition(
-                        type: PageTransitionType.rightToLeft,
-                        duration: Duration(milliseconds: 200),
-                        child: BuatJadwal(
-                          data: widget.data,
-                        )));
-              },
-              child: Container(
-                color: colorses.biru2,
-                width: MediaQuery.of(context).size.width / 2 + 20,
-                child: Center(
-                    child: Text(
-                  "Undang Ustadz",
-                  style: TextStyle(color: Colors.white),
-                )),
-              ),
-            )
-          ],
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  duration: Duration(milliseconds: 200),
+                  child: PostArtikel()));
+        },
+        backgroundColor: Colors.red,
+        child: Icon(Icons.article_outlined),
       ),
     );
   }

@@ -11,15 +11,21 @@ import 'package:daikita/src/models/getDetailUndanganModel.dart';
 import 'package:daikita/src/models/getDetailUstadzModel.dart';
 import 'package:daikita/src/models/getJadwalSholatModel.dart';
 import 'package:daikita/src/models/getJadwalUstadzModel.dart';
+import 'package:daikita/src/models/getKategoriLabelModel.dart';
 import 'package:daikita/src/models/getKecamatanModel.dart';
 import 'package:daikita/src/models/getKotaModel.dart';
+import 'package:daikita/src/models/getLabelModel.dart';
 import 'package:daikita/src/models/getListDoaModel.dart';
 import 'package:daikita/src/models/getListKategoriModel.dart';
 import 'package:daikita/src/models/getListMarkArtikelModel.dart';
+import 'package:daikita/src/models/getListUndanganBatalModel.dart';
+import 'package:daikita/src/models/getListUndanganConfirmModel.dart';
+import 'package:daikita/src/models/getListUndanganFinishModel.dart';
 import 'package:daikita/src/models/getListUndanganModel.dart';
 import 'package:daikita/src/models/getListUstadzModel.dart';
 import 'package:daikita/src/models/getLoginModel.dart';
 import 'package:daikita/src/models/getMasterKajianModel.dart';
+import 'package:daikita/src/models/getProfilModel.dart';
 import 'package:daikita/src/models/getProvinsiModel.dart';
 import 'package:daikita/src/models/getUndanganModel.dart';
 import 'package:daikita/src/models/jadwalSholatTerdekatModel.dart';
@@ -27,22 +33,28 @@ import 'package:daikita/src/models/resKonfirmOtpModel.dart';
 import 'package:daikita/src/models/resLoginGmailModel.dart';
 import 'package:daikita/src/models/resLupaPasswordModel.dart';
 import 'package:daikita/src/models/resMarkArtikelModel.dart';
+import 'package:daikita/src/models/resPostArtikelModel.dart';
 import 'package:daikita/src/models/resRegisterGuestModel.dart';
+import 'package:daikita/src/models/resUlasanModel.dart';
 import 'package:daikita/src/models/resUstadzKonfirmModel.dart';
 import 'package:daikita/src/models/sendChatModel.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:http/http.dart' as client;
+import 'package:path/path.dart' as path;
 import 'dart:convert';
+import 'package:async/async.dart';
 import 'dart:io';
 
 class ApiProviders {
   String url = "https://api.banghasan.com/sholat/format/json";
-  String url2 = "http://185.201.9.208";
+  String url2 = "$urlVps";
 
   // String url = "https://jongjava.tech/tumbas/restapi";
 
-  Future getJadwalSholat(int kota, String tgl) async {
+  Future getJadwalSholat(String kota) async {
     try {
-      final jadwal = await client.get("$url/jadwal/kota/$kota/tanggal/$tgl",
+      var body = jsonEncode({'kode':kota});
+      final jadwal = await client.post("$url2/v1/umum/jadwalSholat",body: body,
           headers: {"Content-Type": "application/json"}).timeout(const Duration(seconds: 11));
       if (jadwal.statusCode == 200) {
         return GetJadwalSholatModel.fromJson(json.decode(jadwal.body));
@@ -147,7 +159,6 @@ class ApiProviders {
     try {
       final prov = await client.post("$url2/v1/provinsi/getactive",
           headers: {"Content-Type": "application/json"}).timeout(const Duration(seconds: 11));
-      print(prov.body);
       if (prov.statusCode == 200) {
         return GetProvinsiModel.fromJson(json.decode(prov.body));
       } else {
@@ -171,7 +182,7 @@ class ApiProviders {
       var body = jsonEncode({'Provinsi': kodeProv});
       final data = await client.post("$url2/v1/kota/activebyprov",
           body: body, headers: {"Content-Type": "application/json"}).timeout(const Duration(seconds: 11));
-      print(body);
+      print(data.body);
       if (data.statusCode == 200) {
         return GetKotaModel.fromJson(json.decode(data.body));
       } else {
@@ -195,7 +206,6 @@ class ApiProviders {
       var body = jsonEncode({'Provinsi': kodeProv, 'Kota': kodeKota});
       final data = await client.post("$url2/v1/kecamatan/activebykota",
           body: body, headers: {"Content-Type": "application/json"}).timeout(const Duration(seconds: 11));
-      print(body);
       if (data.statusCode == 200) {
         return GetKecamatanModel.fromJson(json.decode(data.body));
       } else {
@@ -305,8 +315,15 @@ class ApiProviders {
       final data = await client.post("$url2/v1/undangan/list",
           body: body, headers: {"Content-Type": "application/json", "Authorization": token}).timeout(const Duration(seconds: 11));
       if (data.statusCode == 200) {
-        print(data.body);
-        return GetListUndanganModel.fromJson(json.decode(data.body));
+        if (status == "Pending") {
+          return GetListUndanganModel.fromJson(json.decode(data.body));
+        } else if (status == "Confirm") {
+          return GetListUndanganConfirmModel.fromJson(json.decode(data.body));
+        } else if (status == "Finish") {
+          return GetListUndanganFinishModel.fromJson(json.decode(data.body));
+        } else if (status == "Tolak") {
+          return GetListUndanganBatalModel.fromJson(json.decode(data.body));
+        }
       } else {
         throw Exception('Failed to load Login');
       }
@@ -421,8 +438,7 @@ class ApiProviders {
     try {
       var body = jsonEncode({"email": email, "fullName": name});
       final data = await client.post("$url2/v1/user/loginGmail",
-          body: body, headers: {"Content-Type": "application/json"}).timeout(const Duration(seconds: 11));
-      print(data.body);
+          body: body, headers: {"Content-Type": "application/json"}).timeout(const Duration(seconds: 15));
       if (data.statusCode == 200) {
         return ResLoginGmailModel.fromJson(json.decode(data.body));
       } else {
@@ -619,7 +635,6 @@ class ApiProviders {
       final data = await client.post("$url2/v1/artikel/detail",
           body: body, headers: {"Content-Type": "application/json", "Authorization": token}).timeout(const Duration(seconds: 11));
       if (data.statusCode == 200) {
-        print(data.body);
         return GetDetailDoaModel.fromJson(json.decode(data.body));
       } else {
         throw Exception('Failed to load Login');
@@ -780,6 +795,209 @@ class ApiProviders {
           .get("$url2/v1/banner/atas", headers: {"Content-Type": "application/json"}).timeout(const Duration(seconds: 11));
       if (prov.statusCode == 200) {
         return GetBannerAtasModel.fromJson(json.decode(prov.body));
+      } else {
+        throw Exception('Failed to load Login');
+      }
+    } on SocketException catch (e) {
+      throw Exception(e.toString());
+    } on HttpException {
+      {
+        throw Exception("tidak menemukan post");
+      }
+    } on FormatException {
+      throw Exception("request salah");
+    } on TimeoutException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future ulasan(String token, String kode, String rating, String komentar) async {
+    try {
+      var body = jsonEncode({"kodeUdangan": kode, "rating": rating, "komentar": komentar});
+      final data = await client.put("$url2/v1/undangan/beriulasan",
+          body: body, headers: {"Content-Type": "application/json", "Authorization": token}).timeout(const Duration(seconds: 11));
+      print(data.body);
+      if (data.statusCode == 200) {
+        return ResUlasanModel.fromJson(json.decode(data.body));
+      } else {
+        throw Exception('Failed to load Login');
+      }
+    } on SocketException catch (e) {
+      throw Exception(e.toString());
+    } on HttpException {
+      {
+        throw Exception("tidak menemukan post");
+      }
+    } on FormatException {
+      throw Exception("request salah");
+    } on TimeoutException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future getProfil(String token) async {
+    try {
+      final prov = await client.post("$url2/v1/user/detailuserbytoken",
+          headers: {"Content-Type": "application/json", "Authorization": token}).timeout(const Duration(seconds: 11));
+      print(prov.body);
+      if (prov.statusCode == 200) {
+        return GetProfilModel.fromJson(json.decode(prov.body));
+      } else {
+        throw Exception('Failed to load Login');
+      }
+    } on SocketException catch (e) {
+      throw Exception(e.toString());
+    } on HttpException {
+      {
+        throw Exception("tidak menemukan post");
+      }
+    } on FormatException {
+      throw Exception("request salah");
+    } on TimeoutException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future updateProfil(String token, File foto) async {
+    try {
+      var uri = Uri.parse("$url2/v1/user/editprofile");
+      var request = new client.MultipartRequest("POST", uri);
+      request.headers['authorization'] = token;
+
+      if (foto != null) {
+        request.files.add(client.MultipartFile(
+            "photos",
+            // ignore: deprecated_member_use
+            client.ByteStream(DelegatingStream.typed(foto.openRead())),
+            await foto.length(),
+            filename: path.basename(foto.path)));
+      } else {
+        request.fields['photos'] = "";
+      }
+      int statusResponse;
+      await request
+          .send()
+          .then((result) async {
+            await client.Response.fromStream(result).then((response) {
+              print(response.statusCode);
+              statusResponse = response.statusCode;
+            });
+          })
+          .catchError((err) => print('error : ' + err.toString()))
+          .whenComplete(() {});
+      return statusResponse;
+    } on SocketException catch (e) {
+      throw Exception(e.toString());
+    } on HttpException {
+      {
+        throw Exception("tidak menemukan post");
+      }
+    } on FormatException {
+      throw Exception("request salah");
+    } on TimeoutException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future getKategoriLabel() async {
+    try {
+      final prov = await client.get("$url2/v1/masterkategori/active",
+          headers: {"Content-Type": "application/json"}).timeout(const Duration(seconds: 11));
+      if (prov.statusCode == 200) {
+        return GetKategoriLabelModel.fromJson(json.decode(prov.body));
+      } else {
+        throw Exception('Failed to load Login');
+      }
+    } on SocketException catch (e) {
+      throw Exception(e.toString());
+    } on HttpException {
+      {
+        throw Exception("tidak menemukan post");
+      }
+    } on FormatException {
+      throw Exception("request salah");
+    } on TimeoutException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future getLabel(String kode) async {
+    try {
+      var body = jsonEncode({"kategori": kode});
+      final prov = await client.post("$url2/v1/masterlabel/activebykategori",
+          body: body, headers: {"Content-Type": "application/json"}).timeout(const Duration(seconds: 11));
+      print(prov.body);
+      if (prov.statusCode == 200) {
+        return GetLabelModel.fromJson(json.decode(prov.body));
+      } else {
+        throw Exception('Failed to load Login');
+      }
+    } on SocketException catch (e) {
+      throw Exception(e.toString());
+    } on HttpException {
+      {
+        throw Exception("tidak menemukan post");
+      }
+    } on FormatException {
+      throw Exception("request salah");
+    } on TimeoutException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future postArtikel(String label, String judul, String foto, String artikel, String token) async {
+    try {
+      var body = jsonEncode({"label": label, "judul": judul, "foto": foto, "artikel": artikel});
+      final prov = await client.post("$url2/v1/artikel",
+          body: body, headers: {"Content-Type": "application/json", "Authorization": token}).timeout(const Duration(seconds: 11));
+      if (prov.statusCode == 200) {
+        return ResPostArtikelModel.fromJson(json.decode(prov.body));
+      } else {
+        throw Exception('Failed to load Login');
+      }
+    } on SocketException catch (e) {
+      throw Exception(e.toString());
+    } on HttpException {
+      {
+        throw Exception("tidak menemukan post");
+      }
+    } on FormatException {
+      throw Exception("request salah");
+    } on TimeoutException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future updateProfile2(String nama,String kec, String nikah, String negara, String alamat, String token) async {
+    try {
+      var body = jsonEncode({"Fullname":nama,"Kecamatan": kec, "StatusPernikahan": nikah, "Kewarganegaraan": negara, "AlamatDetail": alamat});
+      final prov = await client.post("$url2/v1/user/editprofile2",
+          body: body, headers: {"Content-Type": "application/json", "Authorization": token}).timeout(const Duration(seconds: 11));
+      if (prov.statusCode == 200) {
+        return prov.statusCode;
+      } else {
+        throw Exception('Failed to load Login');
+      }
+    } on SocketException catch (e) {
+      throw Exception(e.toString());
+    } on HttpException {
+      {
+        throw Exception("tidak menemukan post");
+      }
+    } on FormatException {
+      throw Exception("request salah");
+    } on TimeoutException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future updatePassword(String passwordLama,String password, String token) async {
+    try {
+      var body = jsonEncode({"Lama":passwordLama,"Baru": password});
+      final prov = await client.put("$url2/v1/user/editpassword",
+          body: body, headers: {"Content-Type": "application/json", "Authorization": token}).timeout(const Duration(seconds: 11));
+      if (prov.statusCode == 200) {
+        return ResPostArtikelModel.fromJson(json.decode(prov.body));
       } else {
         throw Exception('Failed to load Login');
       }

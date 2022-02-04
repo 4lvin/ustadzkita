@@ -1,11 +1,11 @@
 // To parse this JSON data, do
 //
-//     final getChatListModel = getChatListModelFromJson(jsonString);
+//     final getLabelModel = getLabelModelFromJson(jsonString);
 
 import 'dart:convert';
 
-class GetChatListModel {
-  GetChatListModel({
+class GetLabelModel {
+  GetLabelModel({
     this.hasil,
     this.data,
     this.message,
@@ -15,11 +15,11 @@ class GetChatListModel {
   List<Datum> data;
   String message;
 
-  factory GetChatListModel.fromRawJson(String str) => GetChatListModel.fromJson(json.decode(str));
+  factory GetLabelModel.fromRawJson(String str) => GetLabelModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory GetChatListModel.fromJson(Map<String, dynamic> json) => GetChatListModel(
+  factory GetLabelModel.fromJson(Map<String, dynamic> json) => GetLabelModel(
     hasil: json["hasil"],
     data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
     message: json["message"],
@@ -34,44 +34,28 @@ class GetChatListModel {
 
 class Datum {
   Datum({
-    this.topik,
     this.nama,
-    this.read,
-    this.email,
-    this.isi,
-    this.token,
-    this.foto,
+    this.kode,
+    this.jumlah,
   });
 
-  String topik;
   String nama;
-  int read;
-  String email;
-  String isi;
-  String token;
-  String foto;
+  String kode;
+  int jumlah;
 
   factory Datum.fromRawJson(String str) => Datum.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    topik: json["topik"],
     nama: json["nama"],
-    read: json["read"],
-    email: json["email"],
-    isi: json["isi"],
-    token: json["token"],
-    foto: json["foto"],
+    kode: json["kode"],
+    jumlah: json["jumlah"],
   );
 
   Map<String, dynamic> toJson() => {
-    "topik": topik,
     "nama": nama,
-    "read": read,
-    "email": email,
-    "isi": isi,
-    "token": token,
-    "foto": foto,
+    "kode": kode,
+    "jumlah": jumlah,
   };
 }

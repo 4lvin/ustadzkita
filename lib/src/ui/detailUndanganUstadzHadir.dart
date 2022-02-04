@@ -10,8 +10,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:toast/toast.dart';
 
 class DetailUndanganUstadzHadir extends StatefulWidget {
-  DetailUndanganUstadzHadir({this.kode,this.nama,this.jenis,this.tema,this.tgl,this.jam});
-  String kode,nama,jenis,tema,jam;
+  DetailUndanganUstadzHadir({this.kode,this.nama,this.jenis,this.tema,this.tgl,this.jam,this.akomodasi,this.alamat});
+  String kode,nama,jenis,tema,jam,akomodasi,alamat;
   DateTime tgl;
   @override
   _DetailUndanganUstadzHadirState createState() => _DetailUndanganUstadzHadirState();
@@ -145,8 +145,8 @@ class _DetailUndanganUstadzHadirState extends State<DetailUndanganUstadzHadir> {
                         Text("${widget.jam}"),
                         Text("${widget.jenis}"),
                         Text("${widget.tema}"),
-                        // Text("${widget.alamat}"),
-                        // Text("${widget.akomodasi}"),
+                        Text("${widget.alamat}"),
+                        Text("${widget.akomodasi}"),
                       ],
                     ),
                   ),

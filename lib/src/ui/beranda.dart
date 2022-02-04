@@ -5,6 +5,7 @@ import 'package:daikita/src/blocs/memberBloc.dart';
 import 'package:daikita/src/models/getBannerQuotesModel.dart';
 import 'package:daikita/src/models/getBannerTengahModel.dart';
 import 'package:daikita/src/pref/preferences.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/doaPilihan.dart';
 import 'package:daikita/src/ui/jadwalSholat.dart';
 import 'package:daikita/src/ui/kompasView.dart';
@@ -13,7 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:toast/toast.dart';
 
 class Beranda extends StatefulWidget {
   @override
@@ -29,6 +32,36 @@ class _BerandaState extends State<Beranda> {
   var now = DateTime.now();
   int _current = 0;
   String bannerATas = "";
+  RefreshController _refreshController =
+  RefreshController(initialRefresh: false);
+
+  void _onRefresh() async {
+    await Future.delayed(Duration(milliseconds: 1000));
+
+    memberBloc.bannerQuotes();
+    memberBloc.bannerTengah();
+    memberBloc.bannerAtas();
+    memberBloc.resBannerAtas.listen((value) {
+      if(mounted)
+        setState(() {
+          bannerATas = value.result.image;
+        });
+    });
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    memberBloc.bannerQuotes();
+    memberBloc.bannerTengah();
+    memberBloc.bannerAtas();
+    memberBloc.resBannerAtas.listen((value) {
+      if(mounted)
+        setState(() {
+          bannerATas = value.result.image;
+        });
+    });
+    _refreshController.loadComplete();
+  }
 
   @override
   void initState() {
@@ -55,16 +88,14 @@ class _BerandaState extends State<Beranda> {
         });
     });
     getKota().then((value) async{
-      final DateFormat formatter = DateFormat('HH:mm');
-      final DateFormat formatterDate = DateFormat('yyyy-MM-dd');
-      jam = DateTime(now.year, now.month, now.day, now.hour, now.minute);
-      blocFitur.jadwalSholatTerdekat(formatter.format(jam), value, formatterDate.format(DateTime.now()));
+      print(value);
+      blocFitur.getJadwalSholat(value);
     });
-    blocFitur.resJadwalTerdekat.listen((value) {
+    blocFitur.resJadwalSholat.listen((value) {
       if(mounted)
         setState(() {
-          waktu = value.result.waktu;
-          sholat = value.result.sholat;
+          waktu = value.waktu;
+          sholat = value.sholat;
         });
     });
     super.initState();
@@ -74,8 +105,16 @@ class _BerandaState extends State<Beranda> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      body: SingleChildScrollView(
-        child: Column(
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: false,
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        header: WaterDropMaterialHeader(
+          backgroundColor: colorses.hijaucerahg1,
+        ),
+        child: ListView(
           children: <Widget>[
             Container(
               height: MediaQuery.of(context).size.height / 3,
@@ -86,7 +125,7 @@ class _BerandaState extends State<Beranda> {
                     height: MediaQuery.of(context).size.height / 3 - 50,
                     color: Colors.grey,
                     child: Image.network(
-                      "http://185.201.9.208/$bannerATas",
+                      "$urlVps/$bannerATas",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -108,17 +147,18 @@ class _BerandaState extends State<Beranda> {
                             Image.asset('assets/logo1.png', width: 180, height: 30, fit: BoxFit.cover),
                             Container(
                               width: 80,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.notifications,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                  Icon(Icons.settings, color: Colors.white)
-                                ],
-                              ),
+                              child: Row(),
+                              // child: Row(
+                              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              //   children: <Widget>[
+                              //     Icon(
+                              //       Icons.notifications,
+                              //       color: Colors.white,
+                              //       size: 30,
+                              //     ),
+                              //     Icon(Icons.settings, color: Colors.white)
+                              //   ],
+                              // ),
                             )
                           ],
                         ),
@@ -176,7 +216,7 @@ class _BerandaState extends State<Beranda> {
                                     SizedBox(
                                       height: 8,
                                     ),
-                                    Text("Menuju $sholat", style: TextStyle(color: Colors.amber))
+                                    Text("Menuju waktu $sholat", style: TextStyle(color: Colors.amber))
                                   ],
                                 ),
                                 Padding(
@@ -261,7 +301,7 @@ class _BerandaState extends State<Beranda> {
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(10.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "http://185.201.9.208/"+imgUrl.image,
+                                          imageUrl: "$urlVps/"+imgUrl.image,
                                           imageBuilder: (context, imageProvider) =>
                                               Container(
                                                 decoration: BoxDecoration(
@@ -396,7 +436,7 @@ class _BerandaState extends State<Beranda> {
                                         child: ClipRRect(
                                             borderRadius: BorderRadius.circular(10.0),
                                             child: CachedNetworkImage(
-                                              imageUrl: "http://185.201.9.208/"+imgUrl.image,
+                                              imageUrl: "$urlVps"+imgUrl.image,
                                               imageBuilder: (context, imageProvider) =>
                                                   Container(
                                                     decoration: BoxDecoration(
@@ -511,7 +551,12 @@ class _BerandaState extends State<Beranda> {
         }else if(daiService.title == "Naskah Khutbah"){
           Navigator.push(context,
               PageTransition(type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200), child: DoaPilihan(kode: 'SoTgPpOaWT',label: "Naskah Khutbah",)));
+        }else if(daiService.title == "Tabayyun"){
+          Toast.show("Fitur dalam pengembangan", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
         } else {
+          Toast.show("Fitur dalam pengembangan", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
           // Navigator.push(
           //     context,
           //     PageTransition(

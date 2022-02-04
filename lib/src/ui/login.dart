@@ -8,7 +8,7 @@ import 'package:daikita/src/ui/utils/colorses.dart';
 import 'package:daikita/src/ui/utils/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -27,7 +27,7 @@ class _LoginState extends State<Login> {
   var _password = TextEditingController();
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
-  FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
+  // FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
 
   Future _signIn() async {
     Dialogs.showLoading(context, "Loading...");
@@ -66,12 +66,12 @@ class _LoginState extends State<Login> {
       print("completed");
       setState(() {});
     });
-    _firebaseMessaging.getToken().then((token) {
-      setState(() {
-        // tokenUser = token;
-      });
-      print(token);
-    });
+    // _firebaseMessaging.getToken().then((token) {
+    //   setState(() {
+    //     // tokenUser = token;
+    //   });
+    //   print(token);
+    // });
     super.initState();
   }
 

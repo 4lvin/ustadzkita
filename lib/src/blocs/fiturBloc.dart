@@ -3,15 +3,22 @@ import 'package:daikita/src/models/getDetailUndanganModel.dart';
 import 'package:daikita/src/models/getDetailUstadzModel.dart';
 import 'package:daikita/src/models/getJadwalSholatModel.dart';
 import 'package:daikita/src/models/getJadwalUstadzModel.dart';
+import 'package:daikita/src/models/getKategoriLabelModel.dart';
+import 'package:daikita/src/models/getLabelModel.dart';
 import 'package:daikita/src/models/getListDoaModel.dart';
 import 'package:daikita/src/models/getListKategoriModel.dart';
 import 'package:daikita/src/models/getListMarkArtikelModel.dart';
+import 'package:daikita/src/models/getListUndanganBatalModel.dart';
+import 'package:daikita/src/models/getListUndanganConfirmModel.dart';
+import 'package:daikita/src/models/getListUndanganFinishModel.dart';
 import 'package:daikita/src/models/getListUndanganModel.dart';
 import 'package:daikita/src/models/getListUstadzModel.dart';
 import 'package:daikita/src/models/getMasterKajianModel.dart';
 import 'package:daikita/src/models/getUndanganModel.dart';
 import 'package:daikita/src/models/jadwalSholatTerdekatModel.dart';
 import 'package:daikita/src/models/resMarkArtikelModel.dart';
+import 'package:daikita/src/models/resPostArtikelModel.dart';
+import 'package:daikita/src/models/resUlasanModel.dart';
 import 'package:daikita/src/models/resUstadzKonfirmModel.dart';
 import 'package:daikita/src/resources/repositories.dart';
 import 'package:rxdart/rxdart.dart';
@@ -23,6 +30,9 @@ class FiturBloc {
   final _undanganFetcher = PublishSubject<GetUndanganModel>();
   final _masterKajianFetcher = PublishSubject<GetMasterKajianModel>();
   final _undanganListFetcher = PublishSubject<GetListUndanganModel>();
+  final _undanganConfirmFetcher = PublishSubject<GetListUndanganConfirmModel>();
+  final _undanganFinishFetcher = PublishSubject<GetListUndanganFinishModel>();
+  final _undanganBatalFetcher = PublishSubject<GetListUndanganBatalModel>();
   final _undanganDetailFetcher = PublishSubject<GetDetailUndanganModel>();
   final _jadwalUstadzFetcher = PublishSubject<GetJadwalUstadzModel>();
   final _ustadzKonfirmasiFetcher = PublishSubject<ResUstadzKonfirmModel>();
@@ -33,6 +43,10 @@ class FiturBloc {
   final _markArtikelFetcher = PublishSubject<ResMarkArtikelModel>();
   final _listMarkArtikelFetcher = PublishSubject<GetListMarkArtikelModel>();
   final _profilUstadzFetcher = PublishSubject<GetDetailUstadzModel>();
+  final _ulasanFetcher = PublishSubject<ResUlasanModel>();
+  final _postArtikelFetcher = PublishSubject<ResPostArtikelModel>();
+  final _kategoriLabelFetcher = PublishSubject<GetKategoriLabelModel>();
+  final _labelFetcher = PublishSubject<GetLabelModel>();
 
   PublishSubject<GetJadwalSholatModel> get resJadwalSholat => _jadwalSholatFetcher.stream;
 
@@ -43,6 +57,12 @@ class FiturBloc {
   PublishSubject<GetMasterKajianModel> get resKajian => _masterKajianFetcher.stream;
 
   PublishSubject<GetListUndanganModel> get resUndanganList => _undanganListFetcher.stream;
+
+  PublishSubject<GetListUndanganConfirmModel> get resUndanganConfirm => _undanganConfirmFetcher.stream;
+
+  PublishSubject<GetListUndanganFinishModel> get resUndanganFinish => _undanganFinishFetcher.stream;
+
+  PublishSubject<GetListUndanganBatalModel> get resUndanganBatal => _undanganBatalFetcher.stream;
 
   PublishSubject<GetDetailUndanganModel> get resUndanganDetail => _undanganDetailFetcher.stream;
 
@@ -64,9 +84,17 @@ class FiturBloc {
 
   PublishSubject<GetDetailUstadzModel> get resProfilUstadz => _profilUstadzFetcher.stream;
 
-  getJadwalSholat(int kota, String tgl) async {
+  PublishSubject<ResUlasanModel> get resUlasan => _ulasanFetcher.stream;
+
+  PublishSubject<ResPostArtikelModel> get resPostArtikel => _postArtikelFetcher.stream;
+
+  PublishSubject<GetKategoriLabelModel> get resKategoriLabel => _kategoriLabelFetcher.stream;
+
+  PublishSubject<GetLabelModel> get resLabel => _labelFetcher.stream;
+
+  getJadwalSholat(String kota) async {
     try {
-      GetJadwalSholatModel getJadwalSholatModel = await _repository.getJadwalSholat(kota, tgl);
+      GetJadwalSholatModel getJadwalSholatModel = await _repository.getJadwalSholat(kota);
       _jadwalSholatFetcher.sink.add(getJadwalSholatModel);
     } catch (error) {
       _jadwalSholatFetcher.sink.add(error);
@@ -103,11 +131,34 @@ class FiturBloc {
   }
 
   listUndangan(String token, String status) async {
-    try {
-      GetListUndanganModel getListUndanganModel = await _repository.listUndangan(token, status);
-      _undanganListFetcher.sink.add(getListUndanganModel);
-    } catch (error) {
-      _undanganListFetcher.sink.add(error);
+    if (status == "Pending") {
+      try {
+        GetListUndanganModel getListUndanganModel = await _repository.listUndangan(token, status);
+        _undanganListFetcher.sink.add(getListUndanganModel);
+      } catch (error) {
+        _undanganListFetcher.sink.add(error);
+      }
+    } else if (status == "Confirm") {
+      try {
+        GetListUndanganConfirmModel getListUndanganConfirmModel = await _repository.listUndangan(token, status);
+        _undanganConfirmFetcher.sink.add(getListUndanganConfirmModel);
+      } catch (error) {
+        _undanganConfirmFetcher.sink.add(error);
+      }
+    } else if (status == "Finish") {
+      try {
+        GetListUndanganFinishModel getListUndanganFinishModel = await _repository.listUndangan(token, status);
+        _undanganFinishFetcher.sink.add(getListUndanganFinishModel);
+      } catch (error) {
+        _undanganFinishFetcher.sink.add(error);
+      }
+    } else if (status == "Tolak") {
+      try {
+        GetListUndanganBatalModel getListUndanganBatalModel = await _repository.listUndangan(token, status);
+        _undanganBatalFetcher.sink.add(getListUndanganBatalModel);
+      } catch (error) {
+        _undanganBatalFetcher.sink.add(error);
+      }
     }
   }
 
@@ -206,12 +257,55 @@ class FiturBloc {
     }
   }
 
+  ulasan(String token, String kode, String rating, String komentar) async {
+    try {
+      ResUlasanModel resUlasanModel = await _repository.ulasan(token, kode, rating, komentar);
+      _ulasanFetcher.sink.add(resUlasanModel);
+    } catch (error) {
+      print(error);
+      _ulasanFetcher.sink.add(error);
+    }
+  }
+
+  kategoriLabel() async {
+    try {
+      GetKategoriLabelModel getKategoriLabelModel = await _repository.getKategoriLabel();
+      _kategoriLabelFetcher.sink.add(getKategoriLabelModel);
+    } catch (error) {
+      print(error);
+      _kategoriLabelFetcher.sink.add(error);
+    }
+  }
+
+  getLabel(String kode) async {
+    try {
+      GetLabelModel getLabelModel = await _repository.getLabel(kode);
+      _labelFetcher.sink.add(getLabelModel);
+    } catch (error) {
+      print(error);
+      _labelFetcher.sink.add(error);
+    }
+  }
+
+  postArtikel(String label, String judul, String foto, String artikel, String token) async {
+    try {
+      ResPostArtikelModel resPostArtikelModel = await _repository.postArtikel(label, judul, foto, artikel, token);
+      _postArtikelFetcher.sink.add(resPostArtikelModel);
+    } catch (error) {
+      print(error);
+      _postArtikelFetcher.sink.add(error);
+    }
+  }
+
   dispose() {
     _jadwalSholatFetcher.close();
     _ustadzFetcher.close();
     _undanganFetcher.close();
     _masterKajianFetcher.close();
     _undanganListFetcher.close();
+    _undanganConfirmFetcher.close();
+    _undanganFinishFetcher.close();
+    _undanganBatalFetcher.close();
     _undanganDetailFetcher.close();
     _jadwalUstadzFetcher.close();
     _ustadzKonfirmasiFetcher.close();
@@ -222,6 +316,9 @@ class FiturBloc {
     _markArtikelFetcher.close();
     _listMarkArtikelFetcher.close();
     _profilUstadzFetcher.close();
+    _postArtikelFetcher.close();
+    _kategoriLabelFetcher.close();
+    _labelFetcher.close();
   }
 }
 

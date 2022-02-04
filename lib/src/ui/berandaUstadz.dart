@@ -1,7 +1,9 @@
 import 'package:daikita/src/blocs/fiturBloc.dart';
+import 'package:daikita/src/blocs/memberBloc.dart';
 import 'package:daikita/src/models/getJadwalUstadzModel.dart';
 import 'package:daikita/src/models/getListUndanganModel.dart';
 import 'package:daikita/src/pref/preferences.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/doaPilihan.dart';
 import 'package:daikita/src/ui/jadwalSholat.dart';
 import 'package:daikita/src/ui/kompasView.dart';
@@ -12,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:toast/toast.dart';
 
 class BerandaUstadz extends StatefulWidget {
   @override
@@ -20,21 +24,44 @@ class BerandaUstadz extends StatefulWidget {
 
 class _BerandaUstadzState extends State<BerandaUstadz> {
   List<DaiService> _daiServiceList = [];
-  String nama;
+  String nama="";
+  String fotos="";
 
+  RefreshController _refreshController =
+  RefreshController(initialRefresh: false);
+
+  void _onRefresh() async {
+    await Future.delayed(Duration(milliseconds: 1000));
+    getToken().then((value) {
+      blocFitur.listUndangan(value,"Pending");
+      memberBloc.getProfil(value);
+    });
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    getToken().then((value) {
+      blocFitur.listUndangan(value,"Pending");
+      memberBloc.getProfil(value);
+    });
+    _refreshController.loadComplete();
+  }
   @override
   void initState() {
     _daiServiceList.add(DaiService(image: 'assets/mn_shalat.svg', title: "Jadwal Sholat"));
     _daiServiceList.add(DaiService(image: 'assets/mn_kiblatarah.svg', title: "Kiblat"));
     _daiServiceList.add(DaiService(image: 'assets/podium.svg', title: "Naskah Khutbah"));
     _daiServiceList.add(DaiService(image: 'assets/mn_hukum.svg', title: "Event"));
-    getNama().then((value) {
-      setState(() {
-        nama = value;
-      });
-    });
     getToken().then((value) {
       blocFitur.listUndangan(value,"Pending");
+      memberBloc.getProfil(value);
+    });
+    memberBloc.resProfil.listen((value) {
+      if(mounted)
+        setState(() {
+          nama = value.result[0].fullName;
+          fotos = value.result[0].foto;
+        });
     });
     super.initState();
   }
@@ -43,8 +70,16 @@ class _BerandaUstadzState extends State<BerandaUstadz> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      body: SingleChildScrollView(
-        child: Column(
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: false,
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        header: WaterDropMaterialHeader(
+          backgroundColor: colorses.hijaucerahg1,
+        ),
+        child: ListView(
           children: <Widget>[
             Container(
               height: MediaQuery.of(context).size.height / 2 - 100,
@@ -83,14 +118,17 @@ class _BerandaUstadzState extends State<BerandaUstadz> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: colorses.hijaudasar),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: colorses.hijaudasar,image: DecorationImage(
+                                image: NetworkImage('${urlVps + fotos}'),
+                                fit: BoxFit.cover,
+                              )),
                               width: 70,
                               height: 70,
-                              child: Icon(
-                                Icons.person,
-                                size: 60,
-                                color: Colors.white,
-                              ),
+                              // child: Icon(
+                              //   Icons.person,
+                              //   size: 60,
+                              //   color: Colors.white,
+                              // ),
                             ),
                             SizedBox(
                               height: 12,
@@ -139,12 +177,12 @@ class _BerandaUstadzState extends State<BerandaUstadz> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  Icon(
-                                    Icons.notifications,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                  Icon(Icons.settings, color: Colors.white)
+                                  // Icon(
+                                  //   Icons.notifications,
+                                  //   color: Colors.white,
+                                  //   size: 30,
+                                  // ),
+                                  // Icon(Icons.settings, color: Colors.white)
                                 ],
                               ),
                             )
@@ -346,6 +384,8 @@ class _BerandaUstadzState extends State<BerandaUstadz> {
           Navigator.push(context,
               PageTransition(type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200), child: DoaPilihan(kode: 'SoTgPpOaWT',label: "Naskah Khutbah",)));
         } else {
+          Toast.show("Fitur dalam pengembangan", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
           // Navigator.push(
           //     context,
           //     PageTransition(

@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:daikita/src/resources/apiProviders.dart';
 
 class Repositories {
   final apiProvider = ApiProviders();
 
-  Future getJadwalSholat(int kota, String tgl) => apiProvider.getJadwalSholat(kota, tgl);
+  Future getJadwalSholat(String kota) => apiProvider.getJadwalSholat(kota);
 
   Future login(String username, String password) => apiProvider.login(username, password);
 
@@ -71,4 +73,23 @@ class Repositories {
   Future bannerTengah() => apiProvider.bannerTengah();
 
   Future bannerAtas() => apiProvider.bannerAtas();
+
+  Future ulasan(String token, String kode, String rating, String komentar) => apiProvider.ulasan(token, kode, rating, komentar);
+
+  Future getProfil(String token) => apiProvider.getProfil(token);
+
+  Future updateProfil(String token, File foto) => apiProvider.updateProfil(token, foto);
+
+  Future getKategoriLabel() => apiProvider.getKategoriLabel();
+
+  Future getLabel(String kode) => apiProvider.getLabel(kode);
+
+  Future postArtikel(String label, String judul, String foto, String artikel, String token) =>
+      apiProvider.postArtikel(label, judul, foto, artikel, token);
+
+  Future updateProfile2(String nama, String kec, String nikah, String negara, String alamat, String token) =>
+      apiProvider.updateProfile2(nama, kec, nikah, negara, alamat, token);
+
+  Future updatePassword(String passwordLama, String password, String token) =>
+      apiProvider.updatePassword(passwordLama, password, token);
 }

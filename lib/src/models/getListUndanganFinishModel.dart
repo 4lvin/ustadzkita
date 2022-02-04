@@ -1,11 +1,11 @@
 // To parse this JSON data, do
 //
-//     final getListUndanganModel = getListUndanganModelFromJson(jsonString);
+//     final getListUndanganFinishModel = getListUndanganFinishModelFromJson(jsonString);
 
 import 'dart:convert';
 
-class GetListUndanganModel {
-  GetListUndanganModel({
+class GetListUndanganFinishModel {
+  GetListUndanganFinishModel({
     this.hasil,
     this.result,
     this.message,
@@ -15,11 +15,11 @@ class GetListUndanganModel {
   List<Result> result;
   String message;
 
-  factory GetListUndanganModel.fromRawJson(String str) => GetListUndanganModel.fromJson(json.decode(str));
+  factory GetListUndanganFinishModel.fromRawJson(String str) => GetListUndanganFinishModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory GetListUndanganModel.fromJson(Map<String, dynamic> json) => GetListUndanganModel(
+  factory GetListUndanganFinishModel.fromJson(Map<String, dynamic> json) => GetListUndanganFinishModel(
     hasil: json["hasil"],
     result: List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
     message: json["message"],
@@ -42,7 +42,8 @@ class Result {
     this.tema,
     this.lokasi,
     this.email,
-    this.foto
+    this.foto,
+    this.ulasan,
   });
 
   String nama;
@@ -54,6 +55,7 @@ class Result {
   String lokasi;
   String email;
   String foto;
+  int ulasan;
 
   factory Result.fromRawJson(String str) => Result.fromJson(json.decode(str));
 
@@ -69,6 +71,7 @@ class Result {
     lokasi: json["Lokasi"],
     email: json["Email"],
     foto: json["Foto"],
+    ulasan: json["Ulasan"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -81,5 +84,6 @@ class Result {
     "Lokasi": lokasi,
     "Email": email,
     "Foto": foto,
+    "Ulasan": ulasan,
   };
 }

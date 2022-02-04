@@ -1,6 +1,7 @@
 import 'package:daikita/src/blocs/chatBloc.dart';
 import 'package:daikita/src/models/getChatListModel.dart';
 import 'package:daikita/src/pref/preferences.dart';
+import 'package:daikita/src/resources/publicUrl.dart';
 import 'package:daikita/src/ui/chatRoom.dart';
 import 'package:daikita/src/ui/utils/colorses.dart';
 import 'package:flutter/cupertino.dart';
@@ -90,6 +91,7 @@ class _PesanState extends State<Pesan> {
                                                 child: ChatRoom(
                                                   email: snapshot.data.data[i].email,
                                                   nama: snapshot.data.data[i].nama,
+                                                  foto: snapshot.data.data[i].foto,
                                                 )));
                                       },
                                       child: Container(
@@ -104,10 +106,14 @@ class _PesanState extends State<Pesan> {
                                                   borderRadius: BorderRadius.circular(50), color: colorses.hijaudasar),
                                               width: 50,
                                               height: 50,
-                                              child: Icon(
-                                                Icons.person,
-                                                size: 40,
-                                                color: Colors.white,
+                                              child: CircleAvatar(
+                                                radius: 23,
+                                                backgroundImage: snapshot.data.data[i].foto == null || snapshot.data.data[i].foto == ""
+                                                    ? NetworkImage(
+                                                  "https://3.bp.blogspot.com/-a6eXQ7JDago/WR6wYhHcp3I/AAAAAAAAB98/3QxH69fmBN85FPA5_PBATBSejiC2w-JHgCLcB/s1600/Flat%2BMusth%2B2.png",
+                                                )
+                                                    : NetworkImage('${urlVps + snapshot.data.data[i].foto}'),
+                                                // fit: BoxFit.cover,
                                               ),
                                             ),
                                             Column(
